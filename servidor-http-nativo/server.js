@@ -1,22 +1,47 @@
+import http from 'node:http'
+import { url } from 'node:inspector';
+import { URL } from 'node:url'
 
-const http = require ('node:http')
+const port = 3000
 
-const porta = 3000
+const status = {
+    "status": "ok",
+    "date": new Date().toISOString()
+}
 
-const server = http.createServer();
+const produtos = [
+    { id: 1, nome: "Sabonete" },
+    { id: 2, nome: "Monitor" },
+    { id: 3, nome: "Cadeira Gamer" }
+]
 
-server.on('request', (req, res) => {
-    console.log(`Requisição recebida! ${req.method} ${req.url}`);
-  
-    res.statusCode = 201
+
+const server = http.createServer((req, res) => {
+    const urlObj = new URL(req.url, `http://${req.headers.host}`)
+    res.statusCode = 404;
     res.setHeader('Content-Type', 'application/json');
-    //O código não está funcionando pois travou
+
+    if (req.method == "GET" && urlObj.pathname == "/contato") {
+         res.statusCode = 200;
+        return res.end(JSON.stringify({
+            "numero_telefone": "67 99999-9999",
+            "endereco": "Rua da Alegria, 99";
+        }));
+    }
+
+    if (req.method == "GET" && urlObj.pathname == "/produtos") {
+        res.statusCode = 200;
+        return res.end(JSON.stringify(produtos));
+    }
+
+    res.end(JSON.stringify({ "esta página é inexistente" }));
 });
 
-server.listen(porta, ()=> {
-    console.log(`Servidor ouvindo na porta ${porta}`)
+server.listen(port, () => {
+    console.log("Servidor funcionando na porta ", port)
 });
-console.log(new Date().toISOString());
+
+
 
 
 
