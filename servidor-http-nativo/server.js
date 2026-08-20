@@ -17,6 +17,7 @@ const produtos = [
 
 
 const server = http.createServer((req, res) => {
+    console.log(`Metodo: ${req.method} | URL: ${req.url}`)
     const urlObj = new URL(req.url, `http://${req.headers.host}`)
     res.statusCode = 404;
     res.setHeader('Content-Type', 'application/json');
